@@ -1,0 +1,24 @@
+#Convert all avi videos into mp4 using GPU
+#Encode videos in mp4 formate that can be imported into simBA for cropping and trimming. 
+#This will also encode the videos in a format optimized for use with SLEAP. 
+import os
+import subprocess
+
+# Ensure the 'converted' directory exists
+output_dir = 'converted'
+if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
+
+# Iterate over all .avi files in the current directory
+for file in os.listdir('.'):
+    if file.endswith('.avi'):
+        # Construct the file name for the converted video
+        output_file = os.path.join(output_dir, os.path.splitext(file)[0] + '.mp4')
+
+        # Construct the ffmpeg command with NVENC
+        command = ['ffmpeg', '-i', file, '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-preset', 'superfast', '-crf','23', output_file]
+
+        # Execute the command
+        subprocess.run(command)
+
+print("Conversion complete.")
